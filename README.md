@@ -1,7 +1,91 @@
-# Getting Started with Create React App
+# CZ3002-Advanced Software Engineering Group Project Team Circus (FrontEnd)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+>Front End Repository of the CZ3002 Group Project. Basic Description goes here.
+
+<!-- TABLE OF CONTENTS -->
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#build-for-production-release">Build for production release</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#available-scripts">Available Scripts</a></li>
+    <li><a href="#learn-more">Learn More</a></li>
+  </ol>
+</details>
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+This application is a Web application that facilitate learning through forums and quizzes based on NTU's courses. <br/>
+### Architecture
+
+Add Architecture Picture Here
+
+### Built With
+* [React](https://reactjs.org/)
+* [React Router](https://reactrouter.com/)
+* [Material UI](https://material-ui.com/)
+* Other libraries specified in package.json
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+To run and set up the mobile application follow these simple example steps.
+
+### Prerequisites
+
+* Make sure that the environment for React is set up. You’ll need to have Node >= 10.16 and npm >= 5.6 on your machine.
+Follow the instructions at the official [React website](https://reactjs.org/docs/create-a-new-react-app.html).
+
+### Installation
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/bryangoh9898/Cz3002-Frontend.git
+   ```
+2. Install NPM packages
+   ```sh
+   npm install
+   ```
+
+### Build for production release
+
+
+<!-- CONTACT -->
+## Contact
+If you have any questions on the project or business inquiries. <br/>
+
+Liew Hon Weng - Hliew003@e.ntu.edu.sg 
+
+Koh Yi Joshua - KO0001UA@e.ntu.edu.sg
+
+Tan Boon Hing - tanb0074@e.ntu.edu.sg
+
+Steffi Ng Si Yu - SNG092@e.ntu.edu.sg
+
+Siek Ming Kang - siek0001@e.ntu.edu.sg
+
+Bryan Goh - bgoh017@e.Ntu.edu.sg
+
+Wu JunYan - jwu028@e.ntu.edu.sg
+
+<!-- Other -->
 ## Available Scripts
 
 In the project directory, you can run:
