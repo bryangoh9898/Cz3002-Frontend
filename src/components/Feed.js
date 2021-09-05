@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
                         <PostsFeed/>
                     </div>
                 </Grid>
-                <Hidden xsDown>
+                <Hidden smDown>
                     <Grid item xs={3}>
                         <div className={classes.rightGrid}>
                             <ForumSelect/>
