@@ -7,11 +7,12 @@ import {
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import Feed from "./components/Feed";
+import Post from "./components/Post";
 import Layout from "./components/Layout";
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import {SocketContext, socket} from './context/socket';
+import { SocketContext, socket } from './context/socket';
 import QuizMainPage from './quizComponents/MainPage';
 
 const theme = createTheme({
@@ -19,8 +20,8 @@ const theme = createTheme({
     primary: {
       main: grey[900],
     },
-    background:{
-      default:grey[100],
+    background: {
+      default: grey[100],
     },
   },
 });
@@ -30,29 +31,34 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline></CssBaseline>
       <SocketContext.Provider value={socket}>
-         <Router>
-        <Switch>
+        <Router>
+          <Switch>
             <Route path="/quiz">
               <Layout>
-                <QuizMainPage/>
+                <QuizMainPage />
               </Layout>
             </Route>
             <Route path="/feed">
               <Layout>
-                <Feed/>
+                <Feed />
+              </Layout>
+            </Route>
+            <Route path="/post">
+              <Layout>
+                <Post />
               </Layout>
             </Route>
             <Route path="/signup">
-              <SignUp/>
+              <SignUp />
             </Route>
             <Route path="/">
-              <SignIn/>
+              <SignIn />
             </Route>
           </Switch>
-      </Router>
+        </Router>
       </SocketContext.Provider>
     </ThemeProvider>
-    
+
   );
 }
 

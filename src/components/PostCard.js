@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import { grey } from '@material-ui/core/colors';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -36,10 +37,23 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function PostCard(props) {
+  const history = useHistory();
   const classes = useStyles();
   return (
-    <Paper className={classes.card}>
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
+    <Paper
+      className={classes.card}
+      onClick={() => {
+        history.push({
+          pathname: "/post",
+          data: props.data
+        });
+      }
+      }>
+      <Grid
+        container
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center">
         <Grid item xs={4}>
           <Typography variant="caption">
             /{props.data.course}
@@ -69,7 +83,7 @@ export default function PostCard(props) {
       <Grid container item direction="row" xs={12}>
         <div className={classes.thumbContainer}>
           <IconButton>
-            <ThumbUpIcon color={props.data.upvoteBool?"primary":"disabled"}/>
+            <ThumbUpIcon color={props.data.upvoteBool ? "primary" : "disabled"} />
           </IconButton>
           <Typography variant="caption" align="center">
             {props.data.upvoteNo}
@@ -77,35 +91,13 @@ export default function PostCard(props) {
         </div>
         <div className={classes.thumbContainer}>
           <IconButton>
-            <ThumbDownIcon color={props.data.downvoteBool?"primary":"disabled"}/>
+            <ThumbDownIcon color={props.data.downvoteBool ? "primary" : "disabled"} />
           </IconButton>
           <Typography variant="caption" align="center">
             {props.data.downvoteNo}
           </Typography>
         </div>
       </Grid>
-      {/* <Grid container item direction="row" justifyContent="flex-start" alignItems="flex-start">
-        <Grid container item direction="column" xs={1} justifyContent="center" alignItems="flex-start">
-          <Grid item>
-            <ThumbUpIcon />
-          </Grid>
-          <Grid item>
-            <Typography variant="caption">
-              {props.data.upvoteNo}
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid container item direction="column" xs={1} justifyContent="center" alignItems="flex-start">
-          <Grid item>
-            <ThumbDownIcon />
-          </Grid>
-          <Grid item>
-            <Typography variant="caption">
-              {props.data.downvoteNo}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Grid> */}
     </Paper>
   );
 }
