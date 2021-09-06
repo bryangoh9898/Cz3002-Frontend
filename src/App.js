@@ -14,6 +14,8 @@ import { grey } from '@material-ui/core/colors';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { SocketContext, socket } from './context/socket';
 import QuizMainPage from './quizComponents/MainPage';
+import Lobby from './quizComponents/Lobby';
+import Game from './quizComponents/Game';
 
 const theme = createTheme({
   palette: {
@@ -33,6 +35,16 @@ function App() {
       <SocketContext.Provider value={socket}>
         <Router>
           <Switch>
+          <Route path="/game">
+              <Layout>
+                <Game />
+              </Layout>
+            </Route>
+            <Route path="/lobby">
+              <Layout>
+                <Lobby />
+              </Layout>
+            </Route>
             <Route path="/quiz">
               <Layout>
                 <QuizMainPage />
