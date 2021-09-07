@@ -17,6 +17,8 @@ import QuizMainPage from './quizComponents/MainPage';
 import Lobby from './quizComponents/Lobby';
 import Game from './quizComponents/Game';
 import {AudioContext, audManager} from './context/audio';
+import {ProvideAuth} from './context/auth';
+import PrivateRoute from './components/PrivateRoute';
 
 const theme = createTheme({
   palette: {
@@ -33,45 +35,48 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline></CssBaseline>
+      <ProvideAuth>
       <AudioContext.Provider value={audManager}>
       <SocketContext.Provider value={socket}>
         <Router>
           <Switch>
-          <Route path="/game">
+          <PrivateRoute path="/game">
               <Layout>
                 <Game />
               </Layout>
-            </Route>
-            <Route path="/lobby">
+            </PrivateRoute>
+            <PrivateRoute path="/lobby">
               <Layout>
                 <Lobby />
               </Layout>
-            </Route>
-            <Route path="/quiz">
+            </PrivateRoute>
+            <PrivateRoute path="/quiz">
               <Layout>
                 <QuizMainPage />
               </Layout>
-            </Route>
-            <Route path="/feed">
-              <Layout>
-                <Feed />
-              </Layout>
-            </Route>
-            <Route path="/post">
+            </PrivateRoute>
+            
+            <PrivateRoute path="/post">
               <Layout>
                 <Post />
               </Layout>
-            </Route>
+            </PrivateRoute>
             <Route path="/signup">
               <SignUp />
             </Route>
-            <Route path="/">
+            <Route path="/signin">
               <SignIn />
             </Route>
+            <PrivateRoute path="/">
+              <Layout>
+                <Feed />
+              </Layout>
+            </PrivateRoute>
           </Switch>
         </Router>
       </SocketContext.Provider>
       </AudioContext.Provider>
+      </ProvideAuth>
     </ThemeProvider>
 
   );

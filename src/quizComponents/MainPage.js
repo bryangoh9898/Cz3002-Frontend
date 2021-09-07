@@ -5,25 +5,14 @@ import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import { useTheme,makeStyles } from "@material-ui/core/styles";
+import { useTheme } from "@material-ui/core/styles";
 import { useMediaQuery } from "@material-ui/core";
 import {useHistory } from "react-router-dom";
 import {SocketContext} from '../context/socket';
 import React, {useState, useContext, useEffect} from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
-
 function Home() {
-  const classes = useStyles();
   const history = useHistory();
   const socket = useContext(SocketContext);
   const [courseCode, setCourseCode] = useState("CZ 3002");

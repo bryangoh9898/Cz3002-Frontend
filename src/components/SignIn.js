@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from "react";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,6 +11,9 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Link as RouterLink } from 'react-router-dom';
+import { useAuth } from "../context/auth";
+import { useHistory } from "react-router-dom";
+
 
 function Copyright() {
   return (
@@ -46,8 +49,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn() {
+  const history = useHistory();
   const classes = useStyles();
-
+  const [username, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const auth = useAuth();
+  const handleSignIn = () => {
+    auth.signin(username,password,()=>{console.log("Callback");history.push("/")});
+  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -64,11 +73,12 @@ export default function SignIn() {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="username"
+            label="Username"
+            name="username"
             autoFocus
+            value={username}
+            onChange ={(e)=>{setUserName(e.target.value)}}
           />
           <TextField
             variant="outlined"
@@ -80,6 +90,8 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            value={password}
+            onChange ={(e)=>{setPassword(e.target.value)}}
           />
           <Button
             type="submit"
@@ -87,7 +99,7 @@ export default function SignIn() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            component={RouterLink} to="/feed"
+            onClick={(e)=>{e.preventDefault();handleSignIn()}}
           >
             Sign In
           </Button>

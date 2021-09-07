@@ -23,7 +23,6 @@ function Game() {
   const audManager = useContext(AudioContext);
   const location = useLocation();
   const history = useHistory();
-  const [guess, setGuess] = useState('');
   const [message, setMessage] = useState('');
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("xs"));
@@ -75,7 +74,7 @@ function Game() {
       socket.off("chat");
       socket.off("sound");
     };
-  }, [socket,history]);
+  }, [socket,history,audManager]);
   if(location.state === undefined)
   {
     history.push("/feed");

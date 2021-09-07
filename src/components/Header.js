@@ -15,6 +15,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import { Link as RouterLink } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
+import { useAuth } from "../context/auth";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -44,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Header() {
+  const auth = useAuth();
   const history = useHistory();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -66,7 +68,8 @@ export default function Header() {
   };
   
   const handleLogOut = () => {
-    console.log("TODO clear auth token");
+    console.log("LOGOUT");
+    auth.signout(()=>{console.log("CALLBACK");history.push("/signin")});
   };
 
   const handleMobileMenuOpen = (event) => {
@@ -86,7 +89,7 @@ export default function Header() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleLogOut} component={RouterLink} to="/" >Log Out</MenuItem>
+      <MenuItem onClick={handleLogOut} >Log Out</MenuItem>
     </Menu>
   );
 
@@ -126,7 +129,7 @@ export default function Header() {
         </IconButton>
         <p>Profile</p>
       </MenuItem>
-      <MenuItem onClick={handleLogOut} component={RouterLink} to="/">
+      <MenuItem onClick={handleLogOut}>
       <IconButton
           color="inherit"
         >
@@ -141,7 +144,7 @@ export default function Header() {
     <div className={classes.grow}>
       <AppBar color="primary" position="static">
         <Toolbar>
-        <div onClick={()=>{history.push("/feed");}} style={{display:"flex",alignItems:"center",cursor:"pointer"}}>
+        <div onClick={()=>{history.push("/");}} style={{display:"flex",alignItems:"center",cursor:"pointer"}}>
             <SchoolIcon style={{flex:1}} className={classes.schoolIcon}/>
           <Typography className={classes.title} variant="h6" noWrap>
             NTUnderflow
