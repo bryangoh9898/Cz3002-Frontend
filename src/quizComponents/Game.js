@@ -1,4 +1,3 @@
-import logo from '../logo.svg';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -17,15 +16,13 @@ import { useLocation,useHistory } from "react-router-dom";
 import {SocketContext} from '../context/socket';
 import React, {useState, useContext, useEffect,useRef} from 'react';
 import ClockIcon from '@material-ui/icons/AccessAlarm';
-import LightBulbIcon from '@material-ui/icons/EmojiObjects';
-import QuestionIcon from '@material-ui/icons/Help';
+import {AudioContext} from '../context/audio';
 
 function Game() {
-  const [hintError, setHintError] = useState('');
   const socket = useContext(SocketContext);
+  const audManager = useContext(AudioContext);
   const location = useLocation();
   const history = useHistory();
-  const [hint, setHint] = useState('');
   const [guess, setGuess] = useState('');
   const [message, setMessage] = useState('');
   const theme = useTheme();
@@ -36,29 +33,12 @@ function Game() {
   const rankingColors = ["gold","silver","#CD7F32","text.primary"];
   const rankingFontSize = ["h4.fontSize","h5.fontSize","h6.fontSize","body1.fontSize"]
   const messagesEndRef = useRef(null);
-  const hintsEndRef = useRef(null);
   const [rankings, setRankings] = useState([]);
-
-  const isValidHint = (x)=> {
-    if(x ==='')
-    {
-      setHintError('Hint is empty');
-      return false;
-    }
-    let intHint = parseInt(x);
-    if (intHint>-1000 && intHint <1000)
-    {
-     setHintError('');
-     return true;
-    }
-    else{setHintError('Hint cannot have more than 3 digits'); return false};
-  }
 
   const scrollToBottom = (ref) => {
     ref.current.scrollIntoView({ behavior: "smooth" })
   }
   
-  //useEffect(()=>{scrollToBottom(hintsEndRef)}, [gameState.hints]);
   useEffect(()=>{scrollToBottom(messagesEndRef)}, [chat]);
   useEffect(
     ()=>{
@@ -74,14 +54,18 @@ function Game() {
     // as soon as the component is mounted, do the following tasks:
 
     // subscribe to socket events
-    //socket.on("sound", (sound)=>{audManager[sound].play(audManager.volume);});
+    socket.on("sound", (sound)=>{audManager[sound].play(audManager.volume);});
 
     socket.on("gameStateUpdate", (gameStateData)=>{
+      if(gameStateData.timer<6)
+      {
+        audManager.time.play(audManager.volume);
+      }
       setGameState(gameStateData);});
 
     socket.on("chat", (data)=>{
     setChat(chat=>[...chat,data])});  
-    socket.on("initialConnect", ()=>{history.push("/");}); 
+    socket.on("initialConnect", ()=>{history.push("/feed");}); 
     return () => {
       console.log("game cleanup");
       // before the component is destroyed
@@ -94,7 +78,7 @@ function Game() {
   }, [socket,history]);
   if(location.state === undefined)
   {
-    history.push("/");
+    history.push("/feed");
     return <div  ref={messagesEndRef}></div>;
   }
   return (
@@ -136,7 +120,7 @@ function Game() {
                 {gameState.round<=5?<div style={{display:"flex",flexDirection:"column",height:550}}>
                   <Typography style={{textAlign:'center',display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-around"}} component="div">
                     <Box style={{flex:1}} fontSize="h5.fontSize" m={1}>
-                    Round {gameState.round}/5
+                    Question {gameState.round}/5
                     </Box>
                     <div style={{display:"flex",alignItems:"center",justifyContent:"center",flex:1,textAlign:"center"}}>
                         <ClockIcon fontSize="large"/>
@@ -153,26 +137,26 @@ function Game() {
                     {gameState.qn.question} 
                     </Box>
                   </Typography>
-                    <GridList spacing={0} cellHeight="auto" cols={isSmallScreen?2:3} style={{overflow: 'auto',paddingInline:5,height:'auto'}}>
-                      {
-                        //   gameState.hints.map((value,index)=>{
-                        //       return (
-                        //         <GridListTile  key={index} cols={1}>
-                        //           <div style={{borderStyle:"outset",width:"100%"}}>
-                        //             <Typography>
-                        //               {value.num1 +" ? " + value.num2 + " = " + value.ans}
-                        //             </Typography>
-                        //           </div>
-                                  
-                        //         </GridListTile>
-                        //       );
-                        //   })
-                      }
-                      <div style={{height:0}} ref={hintsEndRef} />
-                    </GridList >
-                    <div style={{display:"flex",flexDirection:"column",justifyContent:"flex-end" ,textAlign:"left",flexGrow:1}}>
+                  <div style={{flexGrow:1}}>
 
                     </div>
+                    <GridList spacing={0} cellHeight="auto" cols={2} style={{paddingBottom:5,overflow: 'auto',paddingInline:5,height:'auto'}}>
+                      {
+                          gameState.qn.answers.map((value,index)=>{
+                              return (
+                                <GridListTile style={{padding:2}}  key={index} cols={1}>
+                                  <Button onClick={()=>{audManager.submit.play(audManager.volume);socket.emit('guess',index);}} disabled={gameState.users[socket.id].guessed} variant="contained" fullWidth style={{height:50}}>
+                                    <Typography>
+                                      {value}
+                                    </Typography>
+                                  </Button>
+                                  
+                                </GridListTile>
+                              );
+                          })
+                      }
+                    </GridList >
+                    
                    
                   
                 </div>

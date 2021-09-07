@@ -16,6 +16,7 @@ import { SocketContext, socket } from './context/socket';
 import QuizMainPage from './quizComponents/MainPage';
 import Lobby from './quizComponents/Lobby';
 import Game from './quizComponents/Game';
+import {AudioContext, audManager} from './context/audio';
 
 const theme = createTheme({
   palette: {
@@ -32,6 +33,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline></CssBaseline>
+      <AudioContext.Provider value={audManager}>
       <SocketContext.Provider value={socket}>
         <Router>
           <Switch>
@@ -69,6 +71,7 @@ function App() {
           </Switch>
         </Router>
       </SocketContext.Provider>
+      </AudioContext.Provider>
     </ThemeProvider>
 
   );
