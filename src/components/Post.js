@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -7,20 +7,24 @@ import IconButton from '@material-ui/core/IconButton';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import { useLocation } from 'react-router-dom';
-import { grey } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import PublishIcon from '@material-ui/icons/Publish';
+import FilterPost from './FilterPosts';
 import ReplyList from './ReplyList';
+
 const useStyles = makeStyles((theme) => ({
     card: {
         padding: theme.spacing(3),
-        margin: theme.spacing(2),/* 
+        margin: theme.spacing(2)/*,
     minHeight: 200, */
         // '&:hover': {
         //     backgroundColor: grey[100]
         // },
         // cursor: "pointer"
+    },
+    filterCard: {
+        margin: theme.spacing(2)
     },
     usernameItem: {
         display: "flex",
@@ -39,17 +43,17 @@ const useStyles = makeStyles((theme) => ({
     form: {
         width: '100%', // Fix IE 11 issue.
         marginTop: theme.spacing(2),
-      },
+    },
     submitBtn: {
         display: "flex",
         justifyContent: "flex-end"
     },
     userNameReply: {
-        fontWeight:'bold',
-        marginRight:'10px',
-        
+        fontWeight: 'bold',
+        marginRight: '10px',
+
     },
-    replyContainer:{
+    replyContainer: {
         borderBottom: '1px solid grey'
     }
 }));
@@ -64,7 +68,7 @@ export default function Post() {
         alert(reply)
     }
     return (
-        <Grid container direction='column'> 
+        <Grid container direction='column'>
             <Paper className={classes.card}>
                 <Grid container direction="row" justifyContent="space-between" alignItems="center">
                     <Grid item xs={4}>
@@ -111,40 +115,43 @@ export default function Post() {
                         </Typography>
                     </div>
                 </Grid>
-            <form className={classes.form} noValidate>
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    multiline
-                    minRows= '5'
-                    id="reply"
-                    label="Reply"
-                    name="reply"
-                    value={reply}
-                    placeholder="What are your thoughts?"
-                    onChange ={(e)=>{setReply(e.target.value)}}
-                />
-                <Grid item className={classes.submitBtn}>
-                    <Button
-                        type="submit"
-                        // fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        disabled = {reply ? false : true}
-                        endIcon={<PublishIcon/>}
-                        onClick={(e)=>{e.preventDefault();handleSubmitReply();}}
-                    >
-                        Comment
-                    </Button>
-                </Grid>
-            </form>
+                <form className={classes.form} noValidate>
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        multiline
+                        minRows='5'
+                        id="reply"
+                        label="Reply"
+                        name="reply"
+                        value={reply}
+                        placeholder="What are your thoughts?"
+                        onChange={(e) => { setReply(e.target.value) }}
+                    />
+                    <Grid item className={classes.submitBtn}>
+                        <Button
+                            type="submit"
+                            // fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            disabled={reply ? false : true}
+                            endIcon={<PublishIcon />}
+                            onClick={(e) => { e.preventDefault(); handleSubmitReply(); }}
+                        >
+                            Comment
+                        </Button>
+                    </Grid>
+                </form>
             </Paper>
+            <div className={classes.filterCard} >
+                <FilterPost />
+            </div>
             <Paper className={classes.card}>
-               <Grid container direction='column'>
-                   <ReplyList/>
-               </Grid>
+                <Grid container direction='column'>
+                    <ReplyList />
+                </Grid>
             </Paper>
         </Grid>
     );
