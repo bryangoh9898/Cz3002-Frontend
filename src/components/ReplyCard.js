@@ -59,7 +59,7 @@ export default function ReplyCard(props) {
             alignItems="center">
                 <Grid  item xs={4}>
                     <Typography variant="caption" className={classes.userNameReply}>
-                        {props.data.username} .
+                        {props.data.username}
                     </Typography>
                     <Typography variant='caption'>
                         {props.data.time}
