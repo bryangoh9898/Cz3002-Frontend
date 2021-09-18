@@ -19,12 +19,14 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-  export default function FilterPost() {
+  export default function FilterPost(props) {
     const classes = useStyles();
     return (
         <Paper className={classes.card}>
             <Button
+                onClick={props.filterByDate}
                 color="default"
+                style={props.filterDate?{backgroundColor:"#eeeeee"}:{}}
                 className={classes.button}
                 startIcon={<StarsIcon />}
                 disableElevation
@@ -32,7 +34,9 @@ const useStyles = makeStyles((theme) => ({
                 New
             </Button>
             <Button
+                onClick={props.filterByUpVotes}
                 color="default"
+                style={props.filterUpvote?{backgroundColor:"#eeeeee"}:{}}
                 className={classes.button}
                 startIcon={<TrendingUpIcon />}
                 disableElevation

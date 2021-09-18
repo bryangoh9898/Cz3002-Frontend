@@ -11,6 +11,8 @@ export const useAuth = () => {
 };
 function useProvideAuth() {
     const [token, setToken] = useState(null);
+    const [username, setUsername] = useState(null);
+    const [id, setID] = useState(null);
     const [loading, setLoading] = useState(true);
     //cb is callback function
     const signin = (username, password,cb) => {
@@ -22,12 +24,15 @@ function useProvideAuth() {
             .then(function (response) {
             console.log(response.data.token);
             setToken(response.data.token);
-            localStorage.setItem('token',token);
+            setUsername(response.data.username);
+            setID(response.data.id);
+            localStorage.setItem('user',JSON.stringify({token:response.data.token,username:response.data.username,id:response.data.id}));
             cb();
             return response.token
             })
             .catch(function (error) {
             console.log(error);
+            alert("Incorrect username or password")
             });
     };
   
@@ -42,11 +47,14 @@ function useProvideAuth() {
     useEffect(() => {
         if(token == null)
         {
-            let tokenStored = localStorage.getItem('token',token);
-            console.log(tokenStored);
-            if(tokenStored != null)
+            let userStored = localStorage.getItem('user');
+            console.log(userStored);
+            if(userStored != null)
             {
-                setToken(tokenStored);
+                const {token,username,id} = JSON.parse(userStored);
+                setToken(token);
+                setUsername(username);
+                setID(id);
             }
             setLoading(false);
         }
@@ -55,6 +63,8 @@ function useProvideAuth() {
     return {
         loading,
         token,
+        username,
+        id,
         signin,
         signout
     };

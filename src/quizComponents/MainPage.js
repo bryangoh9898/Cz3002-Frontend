@@ -11,8 +11,10 @@ import {useHistory } from "react-router-dom";
 import {SocketContext} from '../context/socket';
 import React, {useState, useContext, useEffect} from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { useAuth } from "../context/auth";
 
 function Home() {
+  const auth = useAuth();
   const history = useHistory();
   const socket = useContext(SocketContext);
   const [courseCode, setCourseCode] = useState("CZ 3002");
@@ -77,8 +79,8 @@ function Home() {
                     style={{ width: 200 }}
                     renderInput={(params) => <TextField {...params} label="Select Course's Quiz" variant="outlined" />}
                   />
-                  <Button onClick={()=>{socket.emit('randomGame',"USERNAME1",courseCode);}} color="primary" size="medium" variant="contained" style={{width:200,marginTop:20}}>Random Room</Button>
-                  <Button onClick={()=>{socket.emit('newGame',"USERNAME1",courseCode);}} color="primary" size="medium" variant="contained" style={{width:200,marginTop:20}} >Create Room</Button>
+                  <Button onClick={()=>{socket.emit('randomGame',auth.username,courseCode);}} color="primary" size="medium" variant="contained" style={{width:200,marginTop:20}}>Random Room</Button>
+                  <Button onClick={()=>{socket.emit('newGame',auth.username,courseCode);}} color="primary" size="medium" variant="contained" style={{width:200,marginTop:20}} >Create Room</Button>
                   {isJoinRoom && 
                   <TextField
                     onChange={(event)=>{setRoomName(event.target.value);}}
@@ -88,7 +90,7 @@ function Home() {
                     size="small"
                     style={{width:200,marginTop:20}}
                     />}
-                  <Button onClick={()=>{if(isJoinRoom){socket.emit('joinGame',"USERNAME2",courseCode,roomName);}else{setIsJoinRoom(true);}}} color="primary" size="medium" variant="contained" style={{width:200,marginTop:20}}>Join Room</Button>
+                  <Button onClick={()=>{if(isJoinRoom){socket.emit('joinGame',auth.username,courseCode,roomName);}else{setIsJoinRoom(true);}}} color="primary" size="medium" variant="contained" style={{width:200,marginTop:20}}>Join Room</Button>
                   
               </div>
                 

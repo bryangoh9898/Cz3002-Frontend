@@ -17,6 +17,36 @@ import {SocketContext} from '../context/socket';
 import React, {useState, useContext, useEffect,useRef} from 'react';
 import ClockIcon from '@material-ui/icons/AccessAlarm';
 import {AudioContext} from '../context/audio';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import PropTypes from 'prop-types';
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      style={{height:'auto'}}
+      role="tabpanel"
+      hidden={value !== index}
+      id={`scrollable-auto-tabpanel-${index}`}
+      aria-labelledby={`scrollable-auto-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <div>
+         {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
 
 function Game() {
   const socket = useContext(SocketContext);
@@ -33,7 +63,7 @@ function Game() {
   const rankingFontSize = ["h4.fontSize","h5.fontSize","h6.fontSize","body1.fontSize"]
   const messagesEndRef = useRef(null);
   const [rankings, setRankings] = useState([]);
-
+  const [tab, setTab] = useState(0);
   const scrollToBottom = (ref) => {
     ref.current.scrollIntoView({ behavior: "smooth" })
   }
@@ -174,28 +204,62 @@ function Game() {
                      0s
                     </Box>
                   </Typography>
-                  <Typography component="div">
-                    <Box style={{ wordWrap: 'break-word' }} color="secondary.main" fontSize="h3.fontSize" fontWeight="fontWeightBold" m={1}>
-                    Results!
-                    </Box>
-                    
-                  </Typography>
-                  <GridList spacing={3} cellHeight="auto" cols={isSmallScreen?2:3} style={{overflow: 'auto',paddingInline:5,height:'auto'}}>
-                      {
-                          rankings.map((value,index)=>{
-                            let colorFontSizeIndex = index<=2?index:3;
-                              return (
-                                <GridListTile  key={index} cols={1}>
-                                    <Typography style={{height:"100%",display:"flex",flexDirection:"column",justifyContent:"flex-end"}} component="div">
-                                      <Box style={{wordWrap: 'break-word' }} color={rankingColors[colorFontSizeIndex]} fontSize={rankingFontSize[colorFontSizeIndex]} fontWeight="fontWeightBold">
-                                      #{(index+1)+ " "+ value.username}
-                                      </Box>
-                                    </Typography>
-                                </GridListTile>
-                              );
-                          })
-                      }
-                    </GridList>
+                  <Tabs
+                    value={tab}
+                    onChange={(event, newValue)=>{setTab(newValue);}}
+                    indicatorColor="secondary"
+                    textColor="primary"
+                    centered
+                    variant="fullWidth"
+                    style={{backgroundColor:"white"}}
+                  >
+                    <Tab label="Results" />
+                    <Tab label="Questions and Answers" />
+                  </Tabs>
+                  {tab ===0 && (<><Typography component="div">
+                      <Box style={{ wordWrap: 'break-word' }} color="secondary.main" fontSize="h3.fontSize" fontWeight="fontWeightBold" m={1}>
+                      Results!
+                      </Box>
+                      
+                    </Typography>
+                    <GridList spacing={3} cellHeight="auto" cols={isSmallScreen?2:3} style={{overflow: 'auto',paddingInline:5,height:'auto'}}>
+                        {
+                            rankings.map((value,index)=>{
+                              let colorFontSizeIndex = index<=2?index:3;
+                                return (
+                                  <GridListTile  key={index} cols={1}>
+                                      <Typography style={{height:"100%",display:"flex",flexDirection:"column",justifyContent:"flex-end"}} component="div">
+                                        <Box style={{wordWrap: 'break-word' }} color={rankingColors[colorFontSizeIndex]} fontSize={rankingFontSize[colorFontSizeIndex]} fontWeight="fontWeightBold">
+                                        #{(index+1)+ " "+ value.username}
+                                        </Box>
+                                      </Typography>
+                                  </GridListTile>
+                                );
+                            })
+                        }
+                      </GridList></>)}
+                      {tab ===1 && (<><Typography component="div">
+                        <Box style={{ wordWrap: 'break-word' }} color="secondary.main" fontSize="h4.fontSize" fontWeight="fontWeightBold" m={1}>
+                        Questions and Answers
+                        </Box>
+                      </Typography>
+                      <List spacing={3} cellHeight="auto" cols={1} style={{overflow: 'auto',paddingInline:5,height:'auto'}}>
+                          {
+                              gameState.qns.map((value,index)=>{
+                                  return (
+                                    <ListItem  key={index} cols={1}>
+                                        <Typography style={{height:"100%",display:"flex",flexDirection:"column",justifyContent:"flex-end"}} component="div">
+                                          <Box style={{wordWrap: 'break-word' }} fontWeight="fontWeightBold">
+                                          {value.question } <br/>{" Answer: " + value.answers[value.ans]}
+                                          </Box>
+                                        </Typography>
+                                    </ListItem>
+                                  );
+                              })
+                          }
+                        </List></>)}
+                      
+                  
                     <div style={{display:"flex",flexDirection:"column",justifyContent:"flex-end",flexGrow:1,padding:10}}>
                         <Button onClick={()=>{history.push("/lobby",{gameCode:location.state.gameCode});}} size="medium" variant="contained" color="secondary" style={{width:"100%"}}>Return to lobby</Button>
                     </div>

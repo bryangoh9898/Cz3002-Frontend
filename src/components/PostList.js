@@ -9,8 +9,9 @@ import PostCard from './PostCard';
 //     }
 //   }));
 
-export default function PostList() {
+export default function PostList(props) {
   //const classes = useStyles();
+  const currentDate = new Date();
   const posts = [
     {
       course: "CZ3002",
@@ -48,8 +49,8 @@ export default function PostList() {
       downvoteBool: false
     }
   ];
-  const listItems = posts.map((data) =>
-    <PostCard data={data} />
+  const listItems = props.threads.map((data,index) =>
+    <PostCard key={data._id} data={data} currentDate={currentDate}/>
   );
   return (
     <div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -8,6 +8,9 @@ import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import { grey } from '@material-ui/core/colors';
 import { useHistory } from 'react-router-dom';
+import { useAuth } from "../context/auth";
+import axios from 'axios';
+import constants from '../Constants';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -37,15 +40,73 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function PostCard(props) {
+  const [postData, setPostData] = useState({...props.data}); 
+  const auth = useAuth();
   const history = useHistory();
   const classes = useStyles();
+  const getTime = (start,end)=>{
+    let difference_In_Time  = Math.abs(start.getTime()-end.getTime());
+    let days =  Math.floor(difference_In_Time / (1000 * 3600 * 24)) 
+    if(days > 0)
+    {
+      return days +" days ago";
+    }
+    else{
+      let hours = Math.floor(difference_In_Time / (1000 * 3600));
+      if(hours > 0)
+      {
+        return hours +"h ago";
+      }
+      else{
+        return Math.ceil(difference_In_Time / (1000 * 60)) +" mins ago";
+      }
+    }
+  }
+  const handleUpVote = (e)=>{
+    e.stopPropagation();
+    console.log(auth.token);
+    axios({
+      method: 'put',
+      url: `${constants.URL}threads/api/Upvote/${postData._id}`,
+      headers: {
+        Authorization: `Bearer ${auth.token}`
+      }
+    }).then(function (response) {
+          // handle success
+          console.log(response.data);
+          setPostData(response.data);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+  }
+
+  const handleDownVote = (e)=>{
+    e.stopPropagation();
+    axios({
+      method: 'put',
+      url: `${constants.URL}threads/api/Downvote/${postData._id}`,
+      headers: {
+        Authorization: `Bearer ${auth.token}`
+      }
+    }).then(function (response) {
+          // handle success
+          console.log(response.data);
+          setPostData(response.data);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+  }
   return (
     <Paper
       className={classes.card}
       onClick={() => {
         history.push({
           pathname: "/post",
-          data: props.data
+          data: postData
         });
       }
       }>
@@ -56,45 +117,45 @@ export default function PostCard(props) {
         alignItems="center">
         <Grid item xs={4}>
           <Typography variant="caption">
-            /{props.data.course}
+            /{postData.CourseNumber}
           </Typography>
         </Grid>
         <Grid className={classes.usernameItem} item xs={4}>
           <Typography variant="caption">
-            Posted by {props.data.username}
+            Posted by {postData.OriginalUserId}
           </Typography>
         </Grid>
         <Grid className={classes.timeItem} item xs={4}>
           <Typography variant="caption">
-            {props.data.time}
+            {getTime(props.currentDate,new Date(postData.createdAt))}
           </Typography>
         </Grid>
       </Grid>
       <Grid item xs={12}>
         <Typography variant="h6">
-          {props.data.title}
+          {postData.Question}
         </Typography>
       </Grid>
       <Grid item xs={12}>
         <Typography variant="body1">
-          {props.data.body}
+          {postData.Question}
         </Typography>
       </Grid>
       <Grid container item direction="row" xs={12}>
         <div className={classes.thumbContainer}>
-          <IconButton>
-            <ThumbUpIcon color={props.data.upvoteBool ? "primary" : "disabled"} />
+          <IconButton onClick={handleUpVote}>
+            <ThumbUpIcon color={ postData.UsersWhoUpvoted.includes(auth.id) ? "primary" : "disabled"} />
           </IconButton>
           <Typography variant="caption" align="center">
-            {props.data.upvoteNo}
+            {postData.ThreadUpVotes}
           </Typography>
         </div>
         <div className={classes.thumbContainer}>
-          <IconButton>
-            <ThumbDownIcon color={props.data.downvoteBool ? "primary" : "disabled"} />
+          <IconButton onClick={handleDownVote}>
+            <ThumbDownIcon color={postData.UsersWhoDownVoted.includes(auth.id) ? "primary" : "disabled"} />
           </IconButton>
           <Typography variant="caption" align="center">
-            {props.data.downvoteNo}
+            {postData.ThreadDownVotes}
           </Typography>
         </div>
       </Grid>

@@ -12,6 +12,9 @@ import Button from '@material-ui/core/Button';
 import PublishIcon from '@material-ui/icons/Publish';
 import FilterPost from './FilterPosts';
 import ReplyList from './ReplyList';
+import { useAuth } from "../context/auth";
+import axios from 'axios';
+import constants from '../Constants';
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -61,9 +64,69 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function Post() {
-    const classes = useStyles();
+    const auth = useAuth();
     const location = useLocation();
+    const [postData, setPostData] = useState({...location.data}); 
+    const classes = useStyles();
     const [reply, setReply] = useState("");
+    const getTime = (start,end)=>{
+        let difference_In_Time  = Math.abs(start.getTime()-end.getTime());
+        let days =  Math.floor(difference_In_Time / (1000 * 3600 * 24)) 
+        if(days > 0)
+        {
+          return days +" days ago";
+        }
+        else{
+          let hours = Math.floor(difference_In_Time / (1000 * 3600));
+          if(hours > 0)
+          {
+            return hours +"h ago";
+          }
+          else{
+            return Math.ceil(difference_In_Time / (1000 * 60)) +" mins ago";
+          }
+        }
+      }
+
+      const handleUpVote = (e)=>{
+        e.stopPropagation();
+        console.log(auth.token);
+        axios({
+          method: 'put',
+          url: `${constants.URL}threads/api/Upvote/${postData._id}`,
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        }).then(function (response) {
+              // handle success
+              console.log(response.data);
+              setPostData(response.data);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+      }
+    
+      const handleDownVote = (e)=>{
+        e.stopPropagation();
+        axios({
+          method: 'put',
+          url: `${constants.URL}threads/api/Downvote/${postData._id}`,
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        }).then(function (response) {
+              // handle success
+              console.log(response.data);
+              setPostData(response.data);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+      }
+
     const handleSubmitReply = () => {
         alert(reply)
     }
@@ -73,45 +136,45 @@ export default function Post() {
                 <Grid container direction="row" justifyContent="space-between" alignItems="center">
                     <Grid item xs={4}>
                         <Typography variant="caption">
-                            {location.data.course}
+                            {postData.CourseNumber}
                         </Typography>
                     </Grid>
                     <Grid className={classes.usernameItem} item xs={4}>
                         <Typography variant="caption">
-                            Posted by {location.data.username}
+                            Posted by {postData.OriginalUserId}
                         </Typography>
                     </Grid>
                     <Grid className={classes.timeItem} item xs={4}>
                         <Typography variant="caption">
-                            {location.data.time}
+                            {getTime(new Date(),new Date(postData.createdAt))}
                         </Typography>
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
                     <Typography variant="h6">
-                        {location.data.title}
+                        {postData.Question}
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>
                     <Typography variant="body1">
-                        {location.data.body}
+                        {postData.Question}
                     </Typography>
                 </Grid>
                 <Grid container item direction="row" xs={12}>
                     <div className={classes.thumbContainer}>
-                        <IconButton>
-                            <ThumbUpIcon color={true ? "primary" : "disabled"} />
+                        <IconButton onClick={handleUpVote}>
+                            <ThumbUpIcon color={postData.UsersWhoUpvoted.includes(auth.id) ? "primary" : "disabled"} />
                         </IconButton>
                         <Typography variant="caption" align="center">
-                            {location.data.upvoteNo}
+                            {postData.ThreadUpVotes}
                         </Typography>
                     </div>
                     <div className={classes.thumbContainer}>
-                        <IconButton>
-                            <ThumbDownIcon color={false ? "primary" : "disabled"} />
+                        <IconButton onClick={handleDownVote}>
+                            <ThumbDownIcon color={postData.UsersWhoDownVoted.includes(auth.id) ? "primary" : "disabled"} />
                         </IconButton>
                         <Typography variant="caption" align="center">
-                            {location.data.downvoteNo}
+                            {postData.ThreadDownVotes}
                         </Typography>
                     </div>
                 </Grid>
