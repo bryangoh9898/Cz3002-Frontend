@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -15,6 +15,7 @@ import ReplyList from './ReplyList';
 import { useAuth } from "../context/auth";
 import axios from 'axios';
 import constants from '../Constants';
+import {useParams} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -64,11 +65,31 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function Post() {
+    const { id } = useParams();
     const auth = useAuth();
     const location = useLocation();
     const [postData, setPostData] = useState({...location.data}); 
     const classes = useStyles();
     const [reply, setReply] = useState("");
+
+    useEffect(() => {
+        axios({
+            method: 'get',
+            url: `${constants.URL}threads/getAllThreads/${id}`,
+            headers: {
+              Authorization: `Bearer ${auth.token}`
+            }
+          }).then(function (response) {
+                // handle success
+                console.log(response.data);
+                setPostData(response.data);
+              })
+              .catch(function (error) {
+                // handle error
+                console.log(error);
+              })
+      }, [id , auth.token]);
+
     const getTime = (start,end)=>{
         let difference_In_Time  = Math.abs(start.getTime()-end.getTime());
         let days =  Math.floor(difference_In_Time / (1000 * 3600 * 24)) 
@@ -91,9 +112,10 @@ export default function Post() {
       const handleUpVote = (e)=>{
         e.stopPropagation();
         console.log(auth.token);
+        const voteUrl = postData.UsersWhoUpvoted.includes(auth.id)?`${constants.URL}threads/api/ResetVote/${postData._id}`:`${constants.URL}threads/api/Upvote/${postData._id}`;
         axios({
           method: 'put',
-          url: `${constants.URL}threads/api/Upvote/${postData._id}`,
+          url: voteUrl,
           headers: {
             Authorization: `Bearer ${auth.token}`
           }
@@ -110,9 +132,10 @@ export default function Post() {
     
       const handleDownVote = (e)=>{
         e.stopPropagation();
+        const voteUrl = postData.UsersWhoDownVoted.includes(auth.id)?`${constants.URL}threads/api/ResetVote/${postData._id}`:`${constants.URL}threads/api/Downvote/${postData._id}`;
         axios({
           method: 'put',
-          url: `${constants.URL}threads/api/Downvote/${postData._id}`,
+          url: voteUrl,
           headers: {
             Authorization: `Bearer ${auth.token}`
           }
@@ -128,7 +151,84 @@ export default function Post() {
       }
 
     const handleSubmitReply = () => {
-        alert(reply)
+        setReply("");
+        axios({
+            method: 'post',
+            url: `${constants.URL}threads/AnswerThread/${postData._id}`,
+            data:{
+                Answers:reply
+            },
+            headers: {
+              Authorization: `Bearer ${auth.token}`
+            }
+          }).then(function (response) {
+                // handle success
+                console.log(response.data);
+                setPostData(response.data);
+                
+              })
+              .catch(function (error) {
+                // handle error
+                console.log(error);
+              })
+    }
+
+    const [filterUpvote, setFilterUpvote] = useState(false);
+    const [filterDate, setFilterDate] = useState(false);
+
+    const filterByUpVotes = ()=>{
+      if(!filterUpvote)
+      {
+        setPostData((postData)=>{
+            return {...postData,Answers:postData.Answers.sort((a,b)=>{return b.Upvote - a.Upvote})}
+        });
+        setFilterUpvote(true);
+        setFilterDate(false);
+      }
+      else{
+        filterReset();
+      }
+    }
+
+    const filterByDate = ()=>{
+      if(!filterDate)
+      {
+        setPostData((postData)=>{
+            return {...postData,Answers:postData.Answers.sort((a,b)=>{return (new Date(b.createdAt)) - (new Date(a.createdAt))})}
+        });
+        setFilterDate(true);
+        setFilterUpvote(false);
+      }
+      else{
+        filterReset();
+      }
+      
+    }
+
+    const filterReset = ()=>{
+        axios({
+            method: 'get',
+            url: `${constants.URL}threads/getAllThreads/${id}`,
+            headers: {
+              Authorization: `Bearer ${auth.token}`
+            }
+          }).then(function (response) {
+                // handle success
+                console.log(response.data);
+                setPostData(response.data);
+                setFilterUpvote(false);
+                setFilterDate(false);
+              })
+              .catch(function (error) {
+                // handle error
+                console.log(error);
+              })
+    }
+
+    if(Object.keys(postData).length === 0)
+    {
+        console.log("Empty");
+        return <></>
     }
     return (
         <Grid container direction='column'>
@@ -141,7 +241,7 @@ export default function Post() {
                     </Grid>
                     <Grid className={classes.usernameItem} item xs={4}>
                         <Typography variant="caption">
-                            Posted by {postData.OriginalUserId}
+                            Posted by {postData.OriginalUserName}
                         </Typography>
                     </Grid>
                     <Grid className={classes.timeItem} item xs={4}>
@@ -209,11 +309,11 @@ export default function Post() {
                 </form>
             </Paper>
             <div className={classes.filterCard} >
-                <FilterPost />
+                <FilterPost filterUpvote={filterUpvote} filterDate={filterDate} filterByUpVotes={filterByUpVotes} filterByDate={filterByDate}/>
             </div>
             <Paper className={classes.card}>
                 <Grid container direction='column'>
-                    <ReplyList />
+                    <ReplyList answers={postData.Answers}/>
                 </Grid>
             </Paper>
         </Grid>

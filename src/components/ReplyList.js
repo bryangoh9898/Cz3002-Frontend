@@ -9,34 +9,34 @@ import ReplyCard from './ReplyCard';
 //     }
 //   }));
 
-export default function ReplyList() {
+export default function ReplyList(props) {
   //const classes = useStyles();
-  const posts = [
-    {
+  // const posts = [
+  //   {
       
-      username: "blurgirl98",
-      time: "4h ago",
-      body: "So basically my reply i So basically my reply is So basically my reply is So basically my reply is So basically my reply is",
-      upvoteNo: 154,
-      downvoteNo: 21,
-      upvoteBool: false,
-      downvoteBool: true
-    }
-    ,
-    {
-        username: "blurgirl98",
-        time: "4h ago",
-        body: "So basically my reply i So basically my reply is So basically my reply is So basically my reply is So basically my reply isSo basically, what happened is my team and I are trying to develop a mobile app for this mod however my syst ",
-        upvoteNo: 154,
-        downvoteNo: 21,
-        upvoteBool: false,
-        downvoteBool: true
-    }
-    ,
+  //     username: "blurgirl98",
+  //     time: "4h ago",
+  //     body: "So basically my reply i So basically my reply is So basically my reply is So basically my reply is So basically my reply is",
+  //     upvoteNo: 154,
+  //     downvoteNo: 21,
+  //     upvoteBool: false,
+  //     downvoteBool: true
+  //   }
+  //   ,
+  //   {
+  //       username: "blurgirl98",
+  //       time: "4h ago",
+  //       body: "So basically my reply i So basically my reply is So basically my reply is So basically my reply is So basically my reply isSo basically, what happened is my team and I are trying to develop a mobile app for this mod however my syst ",
+  //       upvoteNo: 154,
+  //       downvoteNo: 21,
+  //       upvoteBool: false,
+  //       downvoteBool: true
+  //   }
+  //   ,
 
-  ];
-  const listItems = posts.map((data) =>
-    <ReplyCard data={data} />
+  // ];
+  const listItems = props.answers.map((data) =>
+    <ReplyCard key={data.createdAt} data={data} />
   );
   return (
     <div>

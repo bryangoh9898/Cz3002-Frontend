@@ -60,7 +60,7 @@ import { useAuth } from "../context/auth";
     }
 
     const filterReset = ()=>{
-      axios.get(`${constants.URL}threads`)
+      axios.get(`${constants.URL}threads/getAllThreads`)
       .then(function (response) {
         // handle success
         console.log(response.data);
@@ -75,7 +75,7 @@ import { useAuth } from "../context/auth";
     }
 
     useEffect(() => {
-      axios.get(`${constants.URL}threads`)
+      axios.get(`${constants.URL}threads/getAllThreads`)
         .then(function (response) {
           // handle success
           console.log(response.data);

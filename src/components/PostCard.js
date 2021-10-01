@@ -65,9 +65,10 @@ export default function PostCard(props) {
   const handleUpVote = (e)=>{
     e.stopPropagation();
     console.log(auth.token);
+    const voteUrl = postData.UsersWhoUpvoted.includes(auth.id)?`${constants.URL}threads/api/ResetVote/${postData._id}`:`${constants.URL}threads/api/Upvote/${postData._id}`;
     axios({
       method: 'put',
-      url: `${constants.URL}threads/api/Upvote/${postData._id}`,
+      url: voteUrl,
       headers: {
         Authorization: `Bearer ${auth.token}`
       }
@@ -84,9 +85,10 @@ export default function PostCard(props) {
 
   const handleDownVote = (e)=>{
     e.stopPropagation();
+    const voteUrl = postData.UsersWhoDownVoted.includes(auth.id)?`${constants.URL}threads/api/ResetVote/${postData._id}`:`${constants.URL}threads/api/Downvote/${postData._id}`;
     axios({
       method: 'put',
-      url: `${constants.URL}threads/api/Downvote/${postData._id}`,
+      url: voteUrl,
       headers: {
         Authorization: `Bearer ${auth.token}`
       }
@@ -105,7 +107,7 @@ export default function PostCard(props) {
       className={classes.card}
       onClick={() => {
         history.push({
-          pathname: "/post",
+          pathname: `/post/${postData._id}`,
           data: postData
         });
       }
@@ -122,7 +124,7 @@ export default function PostCard(props) {
         </Grid>
         <Grid className={classes.usernameItem} item xs={4}>
           <Typography variant="caption">
-            Posted by {postData.OriginalUserId}
+            Posted by {postData.OriginalUserName}
           </Typography>
         </Grid>
         <Grid className={classes.timeItem} item xs={4}>

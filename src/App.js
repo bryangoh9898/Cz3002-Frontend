@@ -56,7 +56,7 @@ function App() {
               </Layout>
             </PrivateRoute>
             
-            <PrivateRoute path="/post">
+            <PrivateRoute path="/post/:id">
               <Layout>
                 <Post />
               </Layout>

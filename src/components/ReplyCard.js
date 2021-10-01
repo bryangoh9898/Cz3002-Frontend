@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
-
+import { useAuth } from "../context/auth";
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -51,41 +51,61 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function ReplyCard(props) {
     const classes = useStyles();
+    const auth = useAuth();
+    const [replyData, setReplyData] = useState({...props.data});
+    const getTime = (start,end)=>{
+        let difference_In_Time  = Math.abs(start.getTime()-end.getTime());
+        let days =  Math.floor(difference_In_Time / (1000 * 3600 * 24)) 
+        if(days > 0)
+        {
+          return days +" days ago";
+        }
+        else{
+          let hours = Math.floor(difference_In_Time / (1000 * 3600));
+          if(hours > 0)
+          {
+            return hours +"h ago";
+          }
+          else{
+            return Math.ceil(difference_In_Time / (1000 * 60)) +" mins ago";
+          }
+        }
+      }
     return (
-        <Grid container xs ={12} direction = 'column' className={classes.replyContainer}>
+        <Grid container direction = 'column' className={classes.replyContainer}>
             <Grid
             container item
             direction="row"
             alignItems="center">
                 <Grid  item xs={4}>
                     <Typography variant="caption" className={classes.userNameReply}>
-                        {props.data.username}
+                        {replyData.AnsweringUserName}
                     </Typography>
                     <Typography variant='caption'>
-                        {props.data.time}
+                        {getTime(new Date(),new Date(replyData.createdAt))}
                     </Typography>
                 </Grid>
             </Grid>
             <Grid item >
                 <Typography variant='caption' >
-                    {props.data.body}
+                    {replyData.Answer}
                 </Typography>
             </Grid>
             <Grid container item direction="row" xs={12}>
                 <div className={classes.thumbContainer}>
                 <IconButton>
-                    <ThumbUpIcon color={true ? "primary" : "disabled"} />
+                    <ThumbUpIcon color={replyData.UsersWhoUpvotedAnswer.includes(auth.id) ? "primary" : "disabled"} />
                 </IconButton>
                 <Typography variant="caption" align="center">
-                    {props.data.upvoteNo}
+                    {replyData.Upvote}
                 </Typography>
                 </div>
                 <div className={classes.thumbContainer}>
                     <IconButton>
-                        <ThumbDownIcon color={false ? "primary" : "disabled"} />
+                        <ThumbDownIcon color={replyData.UsersWhoDownVotedAnswer.includes(auth.id) ? "primary" : "disabled"} />
                     </IconButton>
                     <Typography variant="caption" align="center">
-                        {props.data.downvoteNo}
+                        {replyData.Downvote}
                     </Typography>
                 </div>
             </Grid>
