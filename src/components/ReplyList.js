@@ -36,7 +36,7 @@ export default function ReplyList(props) {
 
   // ];
   const listItems = props.answers.map((data) =>
-    <ReplyCard key={data.createdAt} data={data} />
+    <ReplyCard key={data.updatedAt} setPostDataForReply={props.setPostDataForReply} threadID={props.threadID} data={data} />
   );
   return (
     <div>

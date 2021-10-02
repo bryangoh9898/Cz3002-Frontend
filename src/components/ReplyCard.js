@@ -6,6 +6,8 @@ import IconButton from '@material-ui/core/IconButton';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import { useAuth } from "../context/auth";
+import constants from '../Constants';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -53,6 +55,7 @@ export default function ReplyCard(props) {
     const classes = useStyles();
     const auth = useAuth();
     const [replyData, setReplyData] = useState({...props.data});
+
     const getTime = (start,end)=>{
         let difference_In_Time  = Math.abs(start.getTime()-end.getTime());
         let days =  Math.floor(difference_In_Time / (1000 * 3600 * 24)) 
@@ -71,6 +74,48 @@ export default function ReplyCard(props) {
           }
         }
       }
+
+      const handleUpVote = (e)=>{
+        e.stopPropagation();
+        console.log(auth.token);
+        const voteUrl = replyData.UsersWhoUpvotedAnswer.includes(auth.id)?`${constants.URL}threads/api/ResetVote/${props.threadID}/Answers/${replyData._id}`:`${constants.URL}threads/api/Upvote/${props.threadID}/Answers/${replyData._id}`;
+        axios({
+          method: 'put',
+          url: voteUrl,
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        }).then(function (response) {
+              // handle success
+              console.log(response.data);
+              props.setPostDataForReply(response.data);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+      }
+    
+      const handleDownVote = (e)=>{
+        e.stopPropagation();
+        const voteUrl = replyData.UsersWhoDownVotedAnswer.includes(auth.id)?`${constants.URL}threads/api/ResetVote/${props.threadID}/Answers/${replyData._id}`:`${constants.URL}threads/api/Downvote/${props.threadID}/Answers/${replyData._id}`;
+        axios({
+          method: 'put',
+          url: voteUrl,
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        }).then(function (response) {
+              // handle success
+              console.log(response.data);
+              props.setPostDataForReply(response.data);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+      }
+
     return (
         <Grid container direction = 'column' className={classes.replyContainer}>
             <Grid
@@ -93,7 +138,7 @@ export default function ReplyCard(props) {
             </Grid>
             <Grid container item direction="row" xs={12}>
                 <div className={classes.thumbContainer}>
-                <IconButton>
+                <IconButton onClick={handleUpVote}>
                     <ThumbUpIcon color={replyData.UsersWhoUpvotedAnswer.includes(auth.id) ? "primary" : "disabled"} />
                 </IconButton>
                 <Typography variant="caption" align="center">
@@ -101,7 +146,7 @@ export default function ReplyCard(props) {
                 </Typography>
                 </div>
                 <div className={classes.thumbContainer}>
-                    <IconButton>
+                    <IconButton onClick={handleDownVote}>
                         <ThumbDownIcon color={replyData.UsersWhoDownVotedAnswer.includes(auth.id) ? "primary" : "disabled"} />
                     </IconButton>
                     <Typography variant="caption" align="center">

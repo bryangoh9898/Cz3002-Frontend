@@ -224,6 +224,21 @@ export default function Post() {
                 console.log(error);
               })
     }
+    //call this when user upvote or downvote answer.
+    const setPostDataForReply = (newPost)=>{
+        
+        if(filterUpvote)
+        {
+          setPostData({...newPost,Answers:newPost.Answers.sort((a,b)=>{return b.Upvote - a.Upvote})});
+        }
+        else if(filterDate)
+        {
+          setPostData({...newPost,Answers:newPost.Answers.sort((a,b)=>{return (new Date(b.createdAt)) - (new Date(a.createdAt))})});
+        }
+        else{
+          setPostData(newPost);
+        }
+    }
 
     if(Object.keys(postData).length === 0)
     {
@@ -313,7 +328,7 @@ export default function Post() {
             </div>
             <Paper className={classes.card}>
                 <Grid container direction='column'>
-                    <ReplyList answers={postData.Answers}/>
+                    <ReplyList setPostDataForReply={setPostDataForReply} threadID={postData._id} answers={postData.Answers}/>
                 </Grid>
             </Paper>
         </Grid>
