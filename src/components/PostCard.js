@@ -135,7 +135,7 @@ export default function PostCard(props) {
       </Grid>
       <Grid item xs={12}>
         <Typography variant="h6">
-          {postData.Question}
+          {postData.Title}
         </Typography>
       </Grid>
       <Grid item xs={12}>

@@ -18,8 +18,7 @@ import { useAuth } from "../context/auth";
         let url = '';
         if(props.courseCode)
         {
-          //REPLACE z to Z IS TEMPORARY
-          url = `${constants.URL}threads/api/FilterByUpvotes/${props.courseCode.replace("Z", "z")}`;
+          url = `${constants.URL}threads/api/FilterByUpvotes/${props.courseCode}`;
         }
         else
         {
@@ -48,7 +47,16 @@ import { useAuth } from "../context/auth";
     const filterByDate = ()=>{
       if(!filterDate)
       {
-        axios.get(`${constants.URL}threads/getLatestThreads/10`, {headers: {
+          let url = '';
+          if(props.courseCode)
+          {
+            url = `${constants.URL}threads/${props.courseCode}`;
+          }
+          else
+          {
+            url = `${constants.URL}threads/getLatestThreads/10`;
+          }
+          axios.get(url, {headers: {
           Authorization: `Bearer ${auth.token}`
         }})
         .then(function (response) {
@@ -73,8 +81,7 @@ import { useAuth } from "../context/auth";
       let url = '';
       if(props.courseCode)
       {
-        //REPLACE z to Z IS TEMPORARY
-        url = `${constants.URL}threads/${props.courseCode.replace("Z", "z")}`;
+        url = `${constants.URL}threads/${props.courseCode}`;
       }
       else
       {
@@ -102,7 +109,6 @@ import { useAuth } from "../context/auth";
           let url = '';
         if(props.courseCode)
         {
-          //REPLACE z to Z IS TEMPORARY
           url = `${constants.URL}threads/api/FilterByUpvotes/${props.courseCode}`;
         }
         else
@@ -124,7 +130,16 @@ import { useAuth } from "../context/auth";
         }
         else if(filterDate)
         {
-          axios.get(`${constants.URL}threads/getLatestThreads/10`, {headers: {
+          let url = '';
+          if(props.courseCode)
+          {
+            url = `${constants.URL}threads/${props.courseCode}`;
+          }
+          else
+          {
+            url = `${constants.URL}threads/getLatestThreads/10`;
+          }
+          axios.get(url, {headers: {
             Authorization: `Bearer ${auth.token}`
           }})
           .then(function (response) {
@@ -141,7 +156,6 @@ import { useAuth } from "../context/auth";
           let url = '';
           if(props.courseCode)
           {
-            //REPLACE z to Z IS TEMPORARY
             url = `${constants.URL}threads/${props.courseCode}`;
           }
           else
@@ -167,7 +181,6 @@ import { useAuth } from "../context/auth";
       let url = '';
       if(props.courseCode)
       {
-        //REPLACE z to Z IS TEMPORARY
         url = `${constants.URL}threads/${props.courseCode}`;
       }
       else

@@ -267,7 +267,7 @@ export default function Post() {
                 </Grid>
                 <Grid item xs={12}>
                     <Typography variant="h6">
-                        {postData.Question}
+                        {postData.Title}
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>

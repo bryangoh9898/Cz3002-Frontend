@@ -110,8 +110,9 @@ const useStyles = makeStyles((theme) => ({
           url: `${constants.URL}threads/PostNewThread`,
           data:{
             CourseNumber:props.courseCode ? props.courseCode : courseCode,
-            Question:postTitle,
-            Faculty: props.faculty ? props.faculty : faculty
+            Question:postContent,
+            Title:postTitle,
+            Faculty: props.faculty ? props.faculty : faculty,
           },
           headers: {
             Authorization: `Bearer ${auth.token}`
