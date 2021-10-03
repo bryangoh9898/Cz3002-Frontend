@@ -4,6 +4,8 @@ import Grid from '@material-ui/core/Grid'
 import ForumSelect from './ForumSelect';
 import PostsFeed from './PostsFeed';
 import Hidden from '@material-ui/core/Hidden';
+import {useParams} from "react-router-dom";
+import CourseBanner from './CourseBanner';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -20,8 +22,10 @@ const useStyles = makeStyles((theme) => ({
 
   export default function Template() {
     const classes = useStyles();
+    const { courseCode } = useParams();
     return (
         <div className={classes.root}>
+            {courseCode && <CourseBanner courseCode={courseCode}/>}
             <Grid container>
                 <Hidden mdUp>
                     <Grid item xs={12}>
@@ -32,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
                 </Hidden>
                 <Grid item xs={12} md={9}>
                     <div className={classes.leftGrid}>
-                        <PostsFeed/>
+                        <PostsFeed courseCode={courseCode}/>
                     </div>
                 </Grid>
                 <Hidden smDown>

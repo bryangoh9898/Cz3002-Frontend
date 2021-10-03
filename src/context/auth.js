@@ -39,7 +39,7 @@ function useProvideAuth() {
     const signout = (cb) => {
         console.log("SIGNOUT");
         setToken(null);
-        localStorage.removeItem('token');
+        localStorage.removeItem('user');
         console.log("CALLBACK");
         cb();
     };

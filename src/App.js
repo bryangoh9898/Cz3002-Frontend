@@ -67,6 +67,11 @@ function App() {
             <Route path="/signin">
               <SignIn />
             </Route>
+            <PrivateRoute path="/:courseCode">
+              <Layout>
+                <Feed />
+              </Layout>
+            </PrivateRoute>
             <PrivateRoute path="/">
               <Layout>
                 <Feed />

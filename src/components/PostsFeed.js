@@ -6,7 +6,7 @@ import axios from 'axios';
 import constants from '../Constants';
 import { useAuth } from "../context/auth";
 
-  export default function PostsFeed() {
+  export default function PostsFeed(props) {
     const auth = useAuth();
     const [threads, setThreads] = useState([]);
     const [filterUpvote, setFilterUpvote] = useState(false);
@@ -15,7 +15,17 @@ import { useAuth } from "../context/auth";
     const filterByUpVotes = ()=>{
       if(!filterUpvote)
       {
-        axios.get(`${constants.URL}threads/api/getHighestUpvotesThread/10` , {headers: {
+        let url = '';
+        if(props.courseCode)
+        {
+          //REPLACE z to Z IS TEMPORARY
+          url = `${constants.URL}threads/api/FilterByUpvotes/${props.courseCode.replace("Z", "z")}`;
+        }
+        else
+        {
+          url = `${constants.URL}threads/api/getHighestUpvotesThread/10`;
+        }
+        axios.get(url , {headers: {
           Authorization: `Bearer ${auth.token}`
         }})
           .then(function (response) {
@@ -60,7 +70,19 @@ import { useAuth } from "../context/auth";
     }
 
     const filterReset = ()=>{
-      axios.get(`${constants.URL}threads/getAllThreads`)
+      let url = '';
+      if(props.courseCode)
+      {
+        //REPLACE z to Z IS TEMPORARY
+        url = `${constants.URL}threads/${props.courseCode.replace("Z", "z")}`;
+      }
+      else
+      {
+        url = `${constants.URL}threads/getAllThreads`;
+      }
+      axios.get(url, {headers: {
+        Authorization: `Bearer ${auth.token}`
+      }})
       .then(function (response) {
         // handle success
         console.log(response.data);
@@ -75,7 +97,20 @@ import { useAuth } from "../context/auth";
     }
 
     useEffect(() => {
-      axios.get(`${constants.URL}threads/getAllThreads`)
+      let url = '';
+      if(props.courseCode)
+      {
+        //REPLACE z to Z IS TEMPORARY
+        url = `${constants.URL}threads/${props.courseCode.replace("Z", "z")}`;
+      }
+      else
+      {
+        url = `${constants.URL}threads/getAllThreads`;
+      }
+      console.log("test"+ url);
+      axios.get(url, {headers: {
+        Authorization: `Bearer ${auth.token}`
+      }})
         .then(function (response) {
           // handle success
           console.log(response.data);
@@ -87,7 +122,7 @@ import { useAuth } from "../context/auth";
           // handle error
           console.log(error);
         })
-    }, []);
+    }, [props.courseCode,auth.token]);
 
     return (
         <div>
