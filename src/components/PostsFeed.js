@@ -96,12 +96,79 @@ import { useAuth } from "../context/auth";
       })
     }
 
+    const refreshThreads = ()=>{
+      if(filterUpvote)
+        {
+          let url = '';
+        if(props.courseCode)
+        {
+          //REPLACE z to Z IS TEMPORARY
+          url = `${constants.URL}threads/api/FilterByUpvotes/${props.courseCode}`;
+        }
+        else
+        {
+          url = `${constants.URL}threads/api/getHighestUpvotesThread/10`;
+        }
+        axios.get(url , {headers: {
+          Authorization: `Bearer ${auth.token}`
+        }})
+          .then(function (response) {
+            // handle success
+            console.log(response.data);
+            setThreads(response.data);
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error);
+          })
+        }
+        else if(filterDate)
+        {
+          axios.get(`${constants.URL}threads/getLatestThreads/10`, {headers: {
+            Authorization: `Bearer ${auth.token}`
+          }})
+          .then(function (response) {
+            // handle success
+            console.log(response.data);
+            setThreads(response.data);
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error);
+          })
+        }
+        else{
+          let url = '';
+          if(props.courseCode)
+          {
+            //REPLACE z to Z IS TEMPORARY
+            url = `${constants.URL}threads/${props.courseCode}`;
+          }
+          else
+          {
+            url = `${constants.URL}threads/getAllThreads`;
+          }
+          axios.get(url, {headers: {
+            Authorization: `Bearer ${auth.token}`
+          }})
+          .then(function (response) {
+            // handle success
+            console.log(response.data);
+            setThreads(response.data);
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error);
+          })
+        }
+    }
+    
     useEffect(() => {
       let url = '';
       if(props.courseCode)
       {
         //REPLACE z to Z IS TEMPORARY
-        url = `${constants.URL}threads/${props.courseCode.replace("Z", "z")}`;
+        url = `${constants.URL}threads/${props.courseCode}`;
       }
       else
       {
@@ -126,7 +193,7 @@ import { useAuth } from "../context/auth";
 
     return (
         <div>
-            <CreatePostButton/>
+            <CreatePostButton refreshThreads={refreshThreads} faculty={props.faculty} courseCode={props.courseCode}/>
             <FilterPost filterUpvote={filterUpvote} filterDate={filterDate} filterByUpVotes={filterByUpVotes} filterByDate={filterByDate}/>
             <PostList threads={threads}/>
         </div>

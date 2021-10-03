@@ -26,25 +26,25 @@ const useStyles = makeStyles((theme) => ({
   export default function ForumSelect() {
     const history = useHistory();
     const [data, setData] = useState([]);
-    const [course, setCourse] = useState('');
-    const [module, setModule] = useState('');
-    const [modList, setModuleList] = useState([]);  
+    const [faculty, setFaculty] = useState('');
+    const [courseCode, setCourseCode] = useState('');
+    const [courseCodeList, setCourseCodeList] = useState([]);   
     const classes = useStyles();
-    // handle change event of the course dropdown
-    const handleCourseChange = (e) => {
+    // handle change event of the Faculty dropdown
+    const handleFacultyChange = (e) => {
         const courseObj = data[e.target.value];
-        setCourse(e.target.value);
-        setModuleList(courseObj.CourseCode);
-        setModule('');
+        setFaculty(e.target.value);
+        setCourseCodeList(courseObj.CourseCode);
+        setCourseCode('');
       };
      
       // handle change event of the module dropdown
-      const handleModuleChange = (e) => {
-        setModule(e.target.value);
+      const handleCourseCodeChange = (e) => {
+        setCourseCode(e.target.value);
         console.log(e.target.value);
         if(e.target.value !== "")
         {
-            history.push("/" + e.target.value);
+            history.push(`/feed/${data[faculty].FacultyName}/${e.target.value}`);
         }
         
       };
@@ -65,26 +65,26 @@ const useStyles = makeStyles((theme) => ({
         <Paper className={classes.card}>
             <Typography className={classes.title} color="textSecondary">Forum Select</Typography>          
           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel id="course-select-label">Course</InputLabel>
+            <InputLabel id="faculty-select-label">Faculty</InputLabel>
             <Select
-                labelId="course-select-label"
-                label="Course"
-                value={course}
-                onChange={handleCourseChange}
+                labelId="faculty-select-label"
+                label="Faculty"
+                value={faculty}
+                onChange={handleFacultyChange}
             >
                 {data.map((item,index)=>{return <MenuItem key={item._id} value={index}>{item.FacultyName}</MenuItem>})}
             </Select> 
          </FormControl> 
           
          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel id="module-select-label">Module</InputLabel>
+            <InputLabel id="courseCode-select-label">Course Code</InputLabel>
             <Select
-            labelId="module-select-label"
-            label="Module"
-            value={module}
-            onChange={handleModuleChange}            
+            labelId="courseCode-select-label"
+            label="Course Code"
+            value={courseCode}
+            onChange={handleCourseCodeChange}            
             >
-                {modList.length > 0 ? modList.map((item)=>{return <MenuItem key={item} value={item}>{item}</MenuItem>}) : <MenuItem value="">Please Select Course</MenuItem>}
+                {courseCodeList.length > 0 ? courseCodeList.map((item)=>{return <MenuItem key={item} value={item}>{item}</MenuItem>}) : <MenuItem value="">Please Select Course</MenuItem>}
             </Select> 
          </FormControl> 
 

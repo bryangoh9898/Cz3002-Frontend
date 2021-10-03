@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
   export default function Template() {
     const classes = useStyles();
-    const { courseCode } = useParams();
+    const { faculty,courseCode } = useParams();
     return (
         <div className={classes.root}>
             {courseCode && <CourseBanner courseCode={courseCode}/>}
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
                 </Hidden>
                 <Grid item xs={12} md={9}>
                     <div className={classes.leftGrid}>
-                        <PostsFeed courseCode={courseCode}/>
+                        <PostsFeed faculty={faculty} courseCode={courseCode}/>
                     </div>
                 </Grid>
                 <Hidden smDown>

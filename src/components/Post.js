@@ -300,6 +300,7 @@ export default function Post() {
                         fullWidth
                         multiline
                         minRows='5'
+                        maxRows='10'
                         id="reply"
                         label="Reply"
                         name="reply"
