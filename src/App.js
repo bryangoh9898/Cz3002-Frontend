@@ -19,6 +19,7 @@ import Game from './quizComponents/Game';
 import {AudioContext, audManager} from './context/audio';
 import {ProvideAuth} from './context/auth';
 import PrivateRoute from './components/PrivateRoute';
+import UserProfile from "./components/UserProfile";
 
 const theme = createTheme({
   palette: {
@@ -40,7 +41,7 @@ function App() {
       <SocketContext.Provider value={socket}>
         <Router>
           <Switch>
-          <PrivateRoute path="/game">
+            <PrivateRoute path="/game">
               <Layout>
                 <Game />
               </Layout>
@@ -67,6 +68,11 @@ function App() {
             <Route path="/signin">
               <SignIn />
             </Route>
+            <PrivateRoute path="/profile">
+              <Layout>
+                <UserProfile />
+              </Layout>
+            </PrivateRoute>
             <PrivateRoute path="/feed/:faculty/:courseCode">
               <Layout>
                 <Feed />

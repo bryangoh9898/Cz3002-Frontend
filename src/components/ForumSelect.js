@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     card:{
         marginRight:theme.spacing(1),
         padding:theme.spacing(2),
-        minHeight:350
+        minHeight:300
     }
   }));
 

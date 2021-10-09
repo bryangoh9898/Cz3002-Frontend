@@ -1,11 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
-import ForumSelect from './ForumSelect';
-import PostsFeed from './PostsFeed';
+import ProfileCard from './ProfileCard';
+import UserFeed from './UserFeed';
 import Hidden from '@material-ui/core/Hidden';
-import {useParams} from "react-router-dom";
-import CourseBanner from './CourseBanner';
+import UserBanner from './UserBanner';
+import { useAuth } from "../context/auth";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -20,29 +20,29 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-  export default function Feed() {
+  export default function UserProfile() {
     const classes = useStyles();
-    const { faculty,courseCode } = useParams();
+    const auth = useAuth();
     return (
         <div className={classes.root}>
-            {courseCode && <CourseBanner courseCode={courseCode}/>}
+            <UserBanner username={auth.username}/>
             <Grid container>
                 <Hidden mdUp>
                     <Grid item xs={12}>
                         <div className={classes.leftGrid}>
-                            <ForumSelect/>
+                            <ProfileCard/>
                         </div>
                     </Grid>
                 </Hidden>
                 <Grid item xs={12} md={9}>
                     <div className={classes.leftGrid}>
-                        <PostsFeed faculty={faculty} courseCode={courseCode}/>
+                        <UserFeed/>
                     </div>
                 </Grid>
                 <Hidden smDown>
                     <Grid item xs={3}>
                         <div className={classes.rightGrid}>
-                            <ForumSelect/>
+                            <ProfileCard/>
                         </div>
                     </Grid>
                 </Hidden>

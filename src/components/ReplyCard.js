@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ReplyCard(props) {
     const classes = useStyles();
     const auth = useAuth();
-    const [replyData, setReplyData] = useState({...props.data});
+    const replyData = props.data;
 
     const getTime = (start,end)=>{
         let difference_In_Time  = Math.abs(start.getTime()-end.getTime());

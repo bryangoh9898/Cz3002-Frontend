@@ -87,7 +87,7 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem component={RouterLink} to="/profile">Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
       <MenuItem onClick={handleLogOut} >Log Out</MenuItem>
     </Menu>
@@ -118,7 +118,7 @@ export default function Header() {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
+      <MenuItem component={RouterLink} to="/profile">
         <IconButton
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
