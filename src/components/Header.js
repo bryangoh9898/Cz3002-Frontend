@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -16,6 +16,8 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import { Link as RouterLink } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../context/auth";
+import axios from 'axios';
+import constants from '../Constants';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -48,12 +50,37 @@ export default function Header() {
   const auth = useAuth();
   const history = useHistory();
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [notif, setNotifs] = useState(0);
+  const [notifData, setNotifsData] = useState([0,[]]);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-    
+  const [notifAnchorEl, setNotifAnchorEl] = useState(null);
+  const isNotifOpen = Boolean(notifAnchorEl);
+
+
+  const handleNotifMenuOpen = (event) => {
+    axios.get(`${constants.URL}users/RetrieveNotification`, {headers: {
+      Authorization: `Bearer ${auth.token}`
+      }})
+      .then(function (response) {
+        // handle success
+        console.log()
+        setNotifsData([response.data[0],response.data[1].reverse()]);
+        setNotifs(0);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      })
+    setNotifAnchorEl(event.currentTarget);
+  };
+
+  const handleNotifMenuClose = (event) => {
+    setNotifAnchorEl(null);
+  };
+
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -76,7 +103,50 @@ export default function Header() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      axios.get(`${constants.URL}users/CheckNotification`, {headers: {
+        Authorization: `Bearer ${auth.token}`
+        }})
+        .then(function (response) {
+          // handle success
+          setNotifs(response.data);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+    }, 30000);
+    return () => clearInterval(interval);
+    
+  }, [auth.token]);
+
   const menuId = 'primary-search-account-menu';
+
+  const renderNotifMenu = (
+    <Menu
+      anchorEl={notifAnchorEl}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      id="notif"
+      keepMounted
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isNotifOpen}
+      onClose={handleNotifMenuClose}
+    >
+      {notifData[1].map((item,index)=>{
+        if(index <notifData[0])
+        {
+          return(<MenuItem component={RouterLink} to={`/post/${item.threadID}`}>
+              <Badge color="secondary" variant="dot">
+                {`${item.UserWhoReplied} commented on "${item.ThreadTitle}"`}
+              </Badge>
+            </MenuItem>)
+        }
+        return (<MenuItem component={RouterLink} to={`/post/${item.threadID}`}>{`${item.UserWhoReplied} commented on "${item.ThreadTitle}"`}</MenuItem>);
+      })}
+    </Menu>
+  );
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -110,9 +180,13 @@ export default function Header() {
         </IconButton>
         <p>Quiz</p>
       </MenuItem>
-      <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={1} color="secondary">
+      <MenuItem
+      aria-label="notif"
+      aria-controls="notif"
+      aria-haspopup="true"
+      onClick={handleNotifMenuOpen}>
+        <IconButton color="inherit">
+          <Badge badgeContent={notif} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -158,8 +232,12 @@ export default function Header() {
           <IconButton aria-label="game quiz" color="inherit" component={RouterLink} to="/quiz">
                 <VideogameAssetIcon fontSize="large"/>
             </IconButton>
-            <IconButton aria-label="show new notifications" color="inherit">
-              <Badge badgeContent={1} color="secondary">
+            <IconButton aria-label="notif"
+          aria-controls="notif"
+          aria-haspopup="true"
+          onClick={handleNotifMenuOpen}
+           color="inherit">
+              <Badge badgeContent={notif} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -189,6 +267,7 @@ export default function Header() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      {renderNotifMenu}
     </div>
   );
 }

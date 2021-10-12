@@ -156,7 +156,7 @@ export default function Post() {
             method: 'post',
             url: `${constants.URL}threads/AnswerThread/${postData._id}`,
             data:{
-                Answers:reply
+                Answer:reply
             },
             headers: {
               Authorization: `Bearer ${auth.token}`

@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
             value={courseCode}
             onChange={handleCourseCodeChange}            
             >
-                {courseCodeList.length > 0 ? courseCodeList.map((item)=>{return <MenuItem key={item} value={item}>{item}</MenuItem>}) : <MenuItem value="">Please Select Course</MenuItem>}
+                {courseCodeList.length > 0 ? courseCodeList.map((item)=>{return <MenuItem key={item} value={item}>{item}</MenuItem>}) : <MenuItem value="">Please Select Faculty</MenuItem>}
             </Select> 
          </FormControl> 
 
