@@ -161,9 +161,9 @@ function Game() {
                     
                     
                   </Typography>
-                  <Typography color="secondary"  component="div">
-                    <Box style={{ wordWrap: 'break-word' }} fontSize="h2.fontSize" fontWeight="fontWeightBold" m={1}>
-                    {gameState.qn.question} 
+                  <Typography component="div">
+                    <Box style={{ wordWrap: 'break-word' ,maxHeight:300,overflow: 'auto'}} fontSize="h5.fontSize" m={1}>
+                    {gameState.qn.question}
                     </Box>
                   </Typography>
                   <div style={{flexGrow:1}}>
